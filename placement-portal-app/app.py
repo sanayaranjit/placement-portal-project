@@ -1,7 +1,8 @@
-from flask import Flask, url_for, render_template, redirect, request, session, flash
+from flask import Flask, url_for, render_template, redirect, request, session, flash, make_response
 from models import db, Admin, Student, Company, Drive, Application
 from datetime import datetime
-from predictor import get_fit_score  
+from predictor import get_fit_score 
+import pandas as pd 
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
@@ -323,6 +324,48 @@ def admin_student_application(id):
 
     return render_template('admin/student_application.html', app=app)
 
+@app.route('/admin/export-applications')
+def export_applications():
+    if 'role' not in session or session['role'] != 'Admin':
+        return redirect(url_for('login'))
+    
+    try:
+        import pandas as pd
+        from flask import make_response
+        
+        apps = Application.query.all()
+        
+        data = []
+        for a in apps:
+            s = Student.query.get(a.student_id)
+            d = Drive.query.get(a.drive_id)
+            c = Company.query.get(d.company_id) if d else None
+            data.append({
+                'Student_Name': s.name if s else 'Unknown',
+                'Job_Title': d.job_title if d else 'Unknown',
+                'Company': c.company_name if c else 'Unknown',
+                'Status': a.status
+            })
+        
+        if not data:
+            data = [{'Student_Name': 'No Applications Found', 'Job_Title': '-', 'Company': '-', 'Status': '-'}]
+
+        df = pd.DataFrame(data)
+        csv_output = df.to_csv(index=False)
+        
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"applications_{timestamp}.csv"
+        
+        response = make_response(csv_output)
+        response.headers["Content-Disposition"] = f"attachment; filename={filename}"
+        response.headers["Content-type"] = "text/csv"
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        return response
+
+    except Exception as e:
+        print(f"CSV EXPORT ERROR: {str(e)}")
+        return f"<h1>Error generating CSV:</h1><pre>{str(e)}</pre><br><a href='/admin'>Go Back</a>"
+
 
 @app.route('/company')
 def company_dashboard():
@@ -625,6 +668,7 @@ def logout():
 @app.route('/about')
 def about():
     return render_template('about.html')
+
 
 
 if __name__ == '__main__':
