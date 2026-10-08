@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block nav %}
+<a href="#overview" class="sidebar-link active">Overview</a>
+<a href="#pending" class="sidebar-link">Pending Approvals</a>
+<a href="#students" class="sidebar-link">Students</a>
+<a href="#companies" class="sidebar-link">Companies</a>
+<a href="#applications" class="sidebar-link">Applications</a>
+{% endblock %}
+
+{% block content %}
+
+<!-- Statistics -->
+<section id="overview">
+    <h5 class="page-heading">Overview</h5>
+    <div class="stat-row">
+        <div class="stat-card">
+            <h6>Students</h6><h3>{{ total_students }}</h3>
+        </div>
+        <div class="stat-card">
+            <h6>Companies</h6><h3>{{ total_companies }}</h3>
+        </div>
+        <div class="stat-card">
+            <h6>Drives</h6><h3>{{ total_drives }}</h3>
+        </div>
+        <div class="stat-card">
+            <h6>Applications</h6><h3>{{ total_applications }}</h3>
+        </div>
+    </div>
+</section>
+
+<!-- Pending Approvals -->
+<section id="pending">
+    <h5 class="page-heading">Pending Approvals</h5>
+    
+    <h6 style="margin-bottom:10px; color:#5E2B83;">Companies</h6>
+
+    {% if pending_companies %}
+    <table class="data-table">
+        <tr>
+            <th>Company Name</th>
+            <th>Email</th>
+            <th>Actions</th>
+        </tr>
+        {% for c in pending_companies %}
+        <tr>
+            <td>{{ c.company_name }}</td>
+            <td>{{ c.email }}</td>
+            <td>
+                <form method="POST" action="/admin/approve-company">
+                    <input type="hidden" name="id" value="{{ c.id }}">
+                    <button type="submit" name="action" value="approve" class="btn btn-green btn-sm">Approve</button>
+                    <button type="submit" name="action" value="reject" class="btn btn-red btn-sm">Reject</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    
+    <p class="empty-msg">No pending companies.</p>
+    
+    {% endif %}
+
+    <h6 style="margin: 20px 0 10px; color:#5E2B83;">Drives</h6>
+
+    {% if pending_drives %}
+
+    <table class="data-table">
+        <tr>
+            <th>Job Title</th>
+            <th>Company</th>
+            <th>Deadline</th>
+            <th>Actions</th></tr>
+        {% for d in pending_drives %}
+        <tr>
+            <td>{{ d.job_title }}</td>
+            <td>{{ d.company_name }}</td>
+            <td>{{ d.deadline }}</td>
+            <td>
+                <form method="POST" action="/admin/approve-drive">
+                    <input type="hidden" name="id" value="{{ d.id }}">
+                    <button type="submit" name="action" value="approve" class="btn btn-green btn-sm">Approve</button>
+                    <button type="submit" name="action" value="reject" class="btn btn-red btn-sm">Reject</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    
+    <p class="empty-msg">No pending drives.</p>
+    
+    {% endif %}
+</section>
+
+<!-- Students -->
+<section id="students">
+    <h5 class="page-heading">All Students</h5>
+    <form method="GET" action="/admin" class="search-box">
+        <input type="text" name="q_student" placeholder="Search by name, email, department...">
+        <button type="submit" class="btn btn-purple">Search</button>
+    </form>
+    {% if students %}
+    <table class="data-table">
+        <tr><th>ID</th><th>Name</th><th>Email</th><th>Department</th><th>CGPA</th><th>Status</th><th>Actions</th></tr>
+        {% for s in students %}
+        <tr>
+            <td>{{ s.id }}</td>
+            <td>{{ s.name }}</td>
+            <td>{{ s.email }}</td>
+            <td>{{ s.department }}</td>
+            <td>{{ s.cgpa }}</td>
+            <td>{% if s.is_active %}<span class="badge bg-green">Active</span>{% else %}<span class="badge bg-gray">Blacklisted</span>{% endif %}</td>
+            <td>
+                {% if s.is_active %}
+                <form method="POST" action="/admin/blacklist-student"><input type="hidden" name="id" value="{{ s.id }}"><button type="submit" class="btn btn-red btn-sm">Blacklist</button></form>
+                {% else %}
+                <form method="POST" action="/admin/activate-student"><input type="hidden" name="id" value="{{ s.id }}"><button type="submit" class="btn btn-green btn-sm">Activate</button></form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}<p class="empty-msg">No students found.</p>{% endif %}
+</section>
+
+<!-- COMPANIES -->
+<section id="companies">
+    <h5 class="page-heading">All Companies</h5>
+
+    <form method="GET" action="/admin" class="search-box">
+        <input type="text" name="q_company" placeholder="Search by name...">
+        <button type="submit" class="btn btn-purple">Search</button>
+    </form>
+
+    {% if companies %}
+    <table class="data-table">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        {% for c in companies %}
+        <tr>
+            <td>{{ c.id }}</td>
+            <td>{{ c.company_name }}</td>
+            <td>{{ c.email }}</td>
+            <td>
+                {% if c.approval_status == 'approved' %}<span class="badge bg-green">Approved</span>
+                {% elif c.approval_status == 'pending' %}<span class="badge bg-yellow">Pending</span>
+                {% else %}<span class="badge bg-red">Rejected</span>{% endif %}
+            </td>
+            <td>
+                {% if c.approval_status != 'rejected' %}
+                <form method="POST" action="/admin/blacklist-company"><input type="hidden" name="id" value="{{ c.id }}"><button type="submit" class="btn btn-red btn-sm">Blacklist</button></form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}<p class="empty-msg">No companies found.</p>{% endif %}
+</section>
+
+<section class="drives">
+    <h5 class="page-heading">ALL Drives</h5>
+    {% if drive%}
+    <table class="data-table">
+        <tr>
+            <th>ID</th>
+            <th>Job Title</th>
+            <th>Company ID</th>
+            <th>Package</th>
+        </tr>
+        {% for d in drive %}
+        <tr>
+            <td>{{ d.id }}</td>
+            <td><a href="/admin/drive/{{ d.id }} " class="link-purple">{{ d.job_title }}</a></td>
+            <td>{{ d.company_id }}</td>
+            <td>{{ d.package }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}<p class="empty-msg">No drives yet.</p>{% endif %}
+</section>
+
+<!-- Applications -->
+<section id="applications">
+    <h5 class="page-heading">All Applications</h5>
+    {% if applications %}
+    <table class="data-table">
+        <tr>
+            <th>ID</th>
+            <th>Student</th>
+            <th>Drive</th>
+            <th>Company</th>
+            <th>Status</th>
+            <th>Details</th>
+        </tr>
+        {% for a in applications %}
+        <tr>
+            <td>{{ a.id }}</td>
+            <td>{{ a.student_name }}</td>
+            <td><a href="/admin/drive/{{ a.drive_id }}" class="link-purple">{{ a.job_title }}</a></td>
+            <td>{{ a.company_name }}</td>
+            <td>
+                {% if a.status == 'Applied' %}<span class="badge bg-blue">Applied</span>
+                {% elif a.status == 'Shortlisted' %}<span class="badge bg-green">Shortlisted</span>
+                {% elif a.status == 'Selected' %}<span class="badge bg-green">Selected</span>
+                {% else %}<span class="badge bg-red">Rejected</span>{% endif %}
+            </td>
+            <td><a href="/admin/application/{{ a.id }}" class="btn btn-purple btn-sm">View</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}<p class="empty-msg">No applications yet.</p>{% endif %}
+</section>
+{% endblock %}

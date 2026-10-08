@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+
+{% block title %}AI Fit Score{% endblock %}
+
+{% block content %}
+
+<!-- FOOLPROOF SCROLL WRAPPER: Forces scrolling even if layout.css is missing the #canvas rule -->
+<div style="max-height: calc(100vh - 120px); overflow-y: auto; padding-right: 5px;">
+
+    <h2 class="page-heading">AI Fit Score Analysis</h2>
+
+    <div class="info-card">
+        <div class="info-row">
+            <div><strong>Company:</strong> {{ company.company_name }}</div>
+            <div><strong>Role:</strong> {{ drive.job_title }}</div>
+            <div><strong>Package:</strong> {{ drive.package }}</div>
+            <div><strong>Location:</strong> {{ drive.location }}</div>
+        </div>
+    </div>
+
+    <div style="text-align: center; padding: 30px; background: #F6F2FA; border-radius: 6px; margin-bottom: 20px; border: 1px solid #D8BFD8;">
+        <h3 style="color: #3C1361; margin-bottom: 25px;">Your Match Probability</h3>
+        
+        <div style="width: 160px; height: 160px; border-radius: 50%; background: conic-gradient({% if score >= 70 %}#27ae60{% elif score >= 50 %}#2980b9{% elif score >= 30 %}#e67e22{% else %}#c0392b{% endif %} {{ score * 3.6 }}deg, #e0d5e9 {{ score * 3.6 }}deg); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto;">
+            <div style="width: 120px; height: 120px; border-radius: 50%; background: #F6F2FA; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+                <span style="font-size: 32px; font-weight: 700; color: {% if score >= 70 %}#27ae60{% elif score >= 50 %}#2980b9{% elif score >= 30 %}#e67e22{% else %}#c0392b{% endif %};">{{ score }}%</span>
+                <span style="font-size: 12px; color: #888;">Fit Score</span>
+            </div>
+        </div>
+        
+        <p style="color: #555; font-size: 16px; font-weight: 600;">{{ message }}</p>
+    </div>
+
+    <div style="background: white; border: 1px solid #D8BFD8; border-radius: 6px; padding: 20px; margin-bottom: 20px;">
+        <h4 style="color: #3C1361; margin-bottom: 15px; font-size: 16px;">Factor Breakdown</h4>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th style="width: 30%;">Factor</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for f in factors %}
+                <tr>
+                    <td>{{ f[0] }}</td>
+                    <td>{{ f[1] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <a href="/student" class="btn btn-purple">← Back to Drives</a>
+
+    <p style="font-size: 11px; color: #aaa; margin-top: 20px; margin-bottom: 20px; font-style: italic;">
+        ⚠️ AI-generated estimate based on profile vs job requirements. Actual selection depends on interview performance.
+    </p>
+
+</div>
+<!-- END FOOLPROOF SCROLL WRAPPER -->
+
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+{% block title %}My Profile{% endblock %}
+
+{% block nav %}
+<a href="/student" class="nav-link">Available Drives</a>
+<a href="/student/history" class="nav-link">My Applications</a>
+<a href="/student/profile" class="nav-link active">Profile</a>
+<a href="/logout" class="nav-link nav-right">Logout</a>
+{% endblock %}
+
+{% block content %}
+<h5 class="page-heading">My Profile</h5>
+
+<form method="POST" action="/student/profile" enctype="multipart/form-data" class="dash-form">
+    <label for="username">Username</label>
+    <input id="username" type="text" name="username" value="{{ student.username }}" readonly class="input-readonly">
+
+    <label for="name">Full Name</label>
+    <input id="name" type="text" name="name" value="{{ student.name }}" required>
+
+    <label for="email">Email</label>
+    <input id="email" type="email" name="email" value="{{ student.email }}" readonly class="input-readonly">
+
+    <label for="department">Department</label>
+    <input id="department" type="text" name="department" value="{{ student.department }}">
+
+    <label for="cgpa">CGPA</label>
+    <input id="cgpa" type="text" name="cgpa" value="{{ student.cgpa }}">
+
+    <label for="skills">Skills</label>
+    <textarea name="skills" rows="2" id="skills">{{ student.skills }}</textarea>
+
+    <div style="display: flex; gap: 20px;">
+    <div style="flex: 1;">
+        <label>Projects Completed</label>
+        <input type="number" name="projects" value="{{ student.projects or 0 }}" min="0">
+    </div>
+    <div style="flex: 1;">
+        <label>Backlogs</label>
+        <input type="number" name="backlogs" value="{{ student.backlogs or 0 }}" min="0">
+    </div>
+    </div>
+    <div style="display: flex; gap: 20px;">
+        <div style="flex: 1;">
+            <label>Mock Aptitude Score (out of 100)</label>
+            <input type="number" name="aptitude_score" value="{{ student.aptitude_score or 50 }}" step="0.1" min="0" max="100">
+        </div>
+        <div style="flex: 1;">
+            <label>Internships Done</label>
+            <input type="number" name="internships" value="{{ student.internships or 0 }}" min="0">
+        </div>
+    </div>
+
+    <label for="resume">Upload Resume</label>
+    <input type="file" name="resume" accept=".pdf" id="resume">
+    {% if student.resume %}
+    <p class="file-hint">Current: <a href="/static/resumes/{{ student.resume }}" class="link-purple">{{ student.resume }}</a></p>
+    {% endif %}
+
+    <button type="submit" class="btn btn-purple">Save Profile</button>
+
+</form>
+{% endblock %}

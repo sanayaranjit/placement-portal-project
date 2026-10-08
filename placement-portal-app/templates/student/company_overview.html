@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block title %}Company Overview{% endblock %}
+
+{% block nav %}
+<a href="/student" class="nav-link">Available Drives</a>
+<a href="/student/history" class="nav-link">My Applications</a>
+<a href="/student/profile" class="nav-link">Profile</a>
+<a href="/logout" class="nav-link nav-right">Logout</a>
+{% endblock %}
+
+{% block content %}
+<h5 class="page-heading">{{ company.company_name }}</h5>
+
+<div class="info-card">
+    <div class="info-row">
+        <div><strong>Email:</strong> {{ company.email }}</div>
+    </div>
+    <div class="info-row">
+        <div><strong>Description:</strong> {{ company.description }}</div>
+    </div>
+</div>
+
+<h5 class="page-heading">Their Placement Drives</h5>
+{% if drives %}
+<table class="data-table">
+    <tr>
+        <th>Job Title</th>
+        <th>Package</th>
+        <th>Location</th>
+        <th>Deadline</th>
+        <th>Status</th>
+    </tr>
+    {% for d in drives %}
+    <tr>
+        <td>{{ d.job_title }}</td>
+        <td>{{ d.package }}</td>
+        <td>{{ d.location }}</td>
+        <td>{{ d.deadline }}</td>
+        <td><span class="badge bg-green">{{ d.status }}</span></td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p class="empty-msg">No active drives from this company.</p>
+{% endif %}
+{% endblock %}

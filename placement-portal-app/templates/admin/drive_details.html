@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Drive Details{% endblock %}
+
+{% block nav %}
+<a href="/admin#overview" class="sidebar-link">Overview</a>
+<a href="/admin#pending" class="sidebar-link">Pending Approvals</a>
+<a href="/admin#students" class="sidebar-link">Students</a>
+<a href="/admin#companies" class="sidebar-link">Companies</a>
+<a href="/admin#applications" class="sidebar-link active">Applications</a>
+{% endblock %}
+
+{% block content %}
+<h5 class="page-heading">Drive Details</h5>
+
+<div class="info-card">
+    <div class="info-row">
+        <div>
+            <strong>Job Title:</strong> {{ drive.job_title }}
+        </div>
+        <div>
+            <strong>Company:</strong> {{ drive.company_name }}
+        </div>
+    </div>
+    <div class="info-row">
+        <div>
+            <strong>Package:</strong> {{ drive.package }}
+        </div>
+        <div>
+            <strong>Location:</strong> {{ drive.location }}
+        </div>
+    </div>
+
+    <div class="info-row">
+        <div>
+            <strong>Deadline:</strong> {{ drive.deadline }}
+        </div>
+        <div>
+            <strong>Status:</strong> <span class="badge bg-green">{{ drive.status }}</span>
+        </div>
+    </div>
+    <div class="info-row">
+        <div>
+            <strong>Description:</strong> {{ drive.description }}
+        </div>
+    </div>
+    <div class="info-row">
+        <div>
+            <strong>Eligibility:</strong> {{ drive.eligibility_criteria }}
+        </div>
+    </div>
+</div>
+
+<h5 class="page-heading">Applicants</h5>
+
+{% if applicants %}
+<table class="data-table">
+    <tr>
+        <th>Student</th>
+        <th>Email</th>
+        <th>Status</th>
+        <th>Action</th>
+    </tr>
+    {% for a in applicants %}
+    <tr>
+        <td>{{ a.student_name }}</td>
+        <td>{{ a.student_email }}</td>
+        <td><span class="badge bg-blue">{{ a.status }}</span></td>
+        <td><a href="/admin/application/{{ a.id }}" class="btn btn-purple btn-sm">View</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+
+<p class="empty-msg">No applicants yet.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block title %}Drive Details{% endblock %}
+
+{% block nav %}
+    <a href="/student" class="nav-link">Available Drives</a>
+    <a href="/student/history" class="nav-link">My Applications</a>
+    <a href="/student/profile" class="nav-link">Profile</a>
+    <a href="/logout" class="nav-link nav-right">Logout</a>
+{% endblock %}
+
+{% block content %}
+<h5 class="page-heading">{{ drive.job_title }}</h5>
+
+<div class="info-card">
+    <div class="info-row">
+        <div> <strong>Company:</strong> <a href="/student/company/{{ drive.company_id }}" class="link-purple">{{ drive.company_name }}</a></div>
+        <div> <strong>Location:</strong> {{ drive.location }}</div>
+    </div>
+
+    <div class="info-row">
+        <div> <strong>Package:</strong> {{ drive.package }}</div>
+        <div> <strong>Deadline:</strong> {{ drive.deadline }}</div>
+    </div>
+
+    <div class="info-row">
+        <div> <strong>Description:</strong><br>{{ drive.description }}</div>
+    </div>
+
+    <div class="info-row">
+        <div><strong>Eligibility:</strong><br>{{ drive.eligibility_criteria }}</div>
+    </div>
+    
+</div>
+
+<br>
+{% if drive.already_applied %}
+    <span class="badge bg-gray" style="font-size: 14px; padding: 8px 16px;">You have already applied to this drive</span>
+{% else %}
+    <form method="POST" action="/student/apply">
+        <input type="hidden" name="drive_id" value="{{ drive.id }}">
+        <button type="submit" class="btn btn-purple" style="padding: 10px 30px; font-size: 15px;">Apply Now</button>
+    </form>
+{% endif %}
+{% endblock %}

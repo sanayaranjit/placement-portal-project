@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Placement Portal App{% endblock %}</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+
+    <div id="title-wrap">
+        <p id="ppa">PLACEMENT PORTAL APP</p>
+    </div>
+
+    <div id="top-nav">
+        {% block nav %}{% endblock %}
+    </div>
+
+    <div id="main-area style="overflow-y: auto; min-height: calc(100vh - 120px);">
+        <div id="canvas">
+            {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <div class="flash-container">
+                            {% for message in messages %}
+                                <div class="flash-message">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <!-- {% with messages = get_flashed_messages() %} 
+    {% if messages %}
+    {% for message in messages %}
+
+    {{ message }}
+
+    {% endfor %}
+    {% endif %} 
+    {% endwith %} -->
+
+</body>
+</html>

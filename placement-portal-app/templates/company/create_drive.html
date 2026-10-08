@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+{% block title %}Create Drive{% endblock %}
+
+{% block nav %}
+<a href="/company" class="nav-link">Dashboard</a>
+<a href="/company/create-drive" class="nav-link active">Create Drive</a>
+<a href="/company/applicants" class="nav-link">Applicants</a>
+<a href="/logout" class="nav-link nav-right">Logout</a>
+{% endblock %}
+
+{% block content %}
+<h5 class="page-heading">Create Placement Drive</h5>
+
+{% if company.approval_status == 'approved' %}
+<form method="POST" action="/company/create-drive" class="dash-form">
+
+    <label for="job_title">Job Title</label>
+    <input id="job_title" type="text" name="job_title" required>
+
+    <label for="package">Package</label>
+    <input id="package" type="text" name="package" placeholder="10 LPA">
+
+    <label for="location">Location</label>
+    <input id="location" type="text" name="location" placeholder="Mumbai">
+
+    <label for="deadline">Deadline</label>
+    <input id="deadline" type="date" name="deadline" required>
+
+    <label for="description">Description</label>
+    <textarea id="description" name="description" rows="4" required></textarea>
+
+    <label for="eligibility_criteria">Eligibility Criteria</label>
+    <textarea id="eligibility_criteria" name="eligibility_criteria" rows="2" required></textarea>
+
+    <h4 style="color: #5E2B83; margin-top: 20px; margin-bottom: 10px; font-size: 14px;">AI Matching Requirements (Optional)</h4>
+    <p class="file-hint">Enables the "Check Fit" AI feature for students.</p>
+
+    <div style="display: flex; gap: 20px;">
+        <div style="flex: 1;">
+            <label>Min CGPA Required</label>
+            <input type="number" name="min_cgpa" step="0.1" placeholder="e.g., 7.5" value="6.0">
+        </div>
+        <div style="flex: 1;">
+            <label>Max Backlogs Allowed</label>
+            <input type="number" name="max_backlogs" placeholder="Leave blank for no limit" value="99">
+        </div>
+    </div>
+
+    <label>Required Skills </label>
+    <input type="text" name="required_skills" placeholder="e.g., Python, Machine Learning, SQL">
+
+    <label>Preferred Streams</label>
+    <input type="text" name="preferred_streams" placeholder="e.g., Computer Science, IT">
+
+    <button type="submit" class="btn btn-purple">Create Drive</button>
+</form>
+
+{% else %}
+<p class="empty-msg">Your company must be approved before creating drives.</p>
+{% endif %}
+{% endblock %}

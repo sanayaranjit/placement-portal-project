@@ -1,0 +1,80 @@
+{% extends "layout.html" %}
+{% block title %}Company Dashboard{% endblock %}
+
+{% block nav %}
+<a href="/company" class="nav-link active">Dashboard</a>
+<a href="/company/create-drive" class="nav-link">Create Drive</a>
+<a href="/company/applicants" class="nav-link">Applicants</a>
+<a href="/logout" class="nav-link nav-right">Logout</a>
+{% endblock %}
+
+{% block content %}
+<h5 class="page-heading">Company Profile</h5>
+
+<div class="info-card">
+    <div class="info-row">
+        <div> <strong>Company Name:</strong> {{ company.company_name }}</div>
+        <div> <strong>Email:</strong> {{ company.email }}</div>
+    </div>
+
+    <div class="info-row">
+        <div> <strong>Description:</strong> {{ company.description }}</div>
+    </div>
+
+    <div class="info-row">
+        <div> <strong>Status:</strong>
+            {% if company.approval_status == 'approved' %}
+                <span class="badge bg-green">Approved</span>
+            {% else %}
+                <span class="badge bg-yellow">Pending</span>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<h5 class="page-heading">My Drives</h5>
+
+{% if drives %}
+<table class="data-table">
+    <tr>
+        <th>Job Title</th>
+        <th>Package</th>
+        <th>Deadline</th>
+        <th>Status</th>
+        <th>Applicants</th>
+        <th>Actions</th>
+        <th>Delete</th>
+    </tr>
+    {% for d in drives %}
+    <tr>
+        <td>{{ d.job_title }}</td>
+        <td>{{ d.package }}</td>
+        <td>{{ d.deadline }}</td>
+        <td>
+            {% if d.status == 'Approved' %}<span class="badge bg-green">{{ d.status }}</span>
+            {% elif d.status == 'Pending' %}<span class="badge bg-yellow">{{ d.status }}</span>
+            {% else %}<span class="badge bg-gray">{{ d.status }}</span>
+            {% endif %}
+        </td>
+        <td>{{ d.applicant_count }}</td>
+        <td>
+            
+            {% if d.status == 'Approved' %}
+            <form method="POST" action="/company/close-drive" class="inline-form">
+                <input type="hidden" name="id" value="{{ d.id }}">
+                <button type="submit" class="btn btn-orange btn-sm">Close</button>
+            </form>
+            {% endif %}
+        </td>
+        <td>
+            <form method="POST" action="/delete/drive/{{ d.id }}" class="inline-form">
+                <button type="submit" class="btn btn-red btn-sm">Delete</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p class="empty-msg">No drives created yet. <a href="/company/create-drive" class="link-purple">Create one</a></p>
+{% endif %}
+{% endblock %}

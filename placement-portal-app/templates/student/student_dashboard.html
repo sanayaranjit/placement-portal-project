@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+{% block title %}Student Dashboard{% endblock %}
+
+{% block nav %}
+<a href="/student" class="nav-link active">Available Drives</a>
+<a href="/student/history" class="nav-link">My Applications</a>
+<a href="/student/profile" class="nav-link">Profile</a>
+<a href="/logout" class="nav-link nav-right">Logout</a>
+{% endblock %}
+
+{% block content %}
+<h5 class="page-heading">Available Placement Drives</h5>
+
+{% if drives %}
+<table class="data-table">
+    <tr>
+        <th>Job Title</th>
+        <th>Company</th>
+        <th>Package</th>
+        <th>Location</th>
+        <th>Deadline</th>
+        <th>Action</th>
+    </tr>
+    {% for d in drives %}
+    <tr>
+        <td>{{ d.job_title }}</td>
+        <td><a href="/student/company/{{ d.company_id }}" class="link-purple">{{ d.company_name }}</a></td>
+        <td>{{ d.package }}</td>
+        <td>{{ d.location }}</td>
+        <td>{{ d.deadline }}</td>
+        <td>
+            {% if not d.already_applied %}
+                
+                {% if d.has_requirements %}
+                    <a href="/student/check-fit/{{ d.id }}" class="btn btn-orange btn-sm" style="margin-right: 5px;">📊 Check Fit</a>
+                {% endif %}
+
+                <form action="/student/apply" method="POST" style="display: inline-block;">
+                    <input type="hidden" name="drive_id" value="{{ d.id }}">
+                    <button type="submit" class="btn btn-green btn-sm">Apply</button>
+                </form>
+                
+            {% else %}
+                <span class="badge bg-gray">Applied</span>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p class="empty-msg">No drives available right now.</p>
+{% endif %}
+{% endblock %}

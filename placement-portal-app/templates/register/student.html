@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Student Registration{% endblock %}
+
+{% block nav %}{% endblock %}
+
+{% block content %}
+<div class="login-box" style="width: 450px;">
+    <h4>Student Registration</h4>
+    <p>Create your student account</p>
+
+    <form method="POST" action="/register/student">
+        <label for="username">Username</label>
+        <input id="username" type="text" name="username" required>
+
+        <label for="name">Full Name</label>
+        <input id="name" type="text" name="name" required>
+
+        <label for="email">Email</label>
+        <input id="email" type="email" name="email" required>
+
+        <label for="password">Password</label>
+        <input id="password" type="password" name="password" required>
+
+        <label for="department">Department</label>
+        <input id="department" type="text" name="department" placeholder="CSE">
+
+        <label for="cgpa">CGPA</label>
+        <input id="cgpa" type="text" name="cgpa" placeholder="8.5">
+
+        <label for="skills">Skills</label>
+        <input id="skills" type="text" name="skills" placeholder="Python, Java, SQL">
+
+        <div style="display: flex; gap: 20px;">
+        <div style="flex: 1;">
+            <label>Projects Completed</label>
+            <input type="number" name="projects" min="0" value="0">
+        </div>
+        <div style="flex: 1;">
+            <label>Backlogs</label>
+            <input type="number" name="backlogs" min="0" value="0">
+        </div>
+        </div>
+
+        <div style="display: flex; gap: 20px;">
+            <div style="flex: 1;">
+                <label>Internships Done</label>
+                <input type="number" name="internships" min="0" value="0">
+            </div>
+        </div>
+
+        <input type="submit" value="Register" id="button">
+    </form>
+
+    <div class="footer-text">
+        Already registered? <a href="{{ url_for('login') }}">Login here</a>
+    </div>
+</div>
+{% endblock %}

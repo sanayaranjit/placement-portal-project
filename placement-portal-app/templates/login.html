@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+
+{% block nav %}{% endblock %}
+
+{% block content %}
+<div class="login-box">
+    <h4>Placement Portal</h4>
+    <p>Sign in to continue</p>
+
+    <form method="POST" action="/">
+        <label for="user-role">Select Role:</label>
+        <select name="role" id="user-role">
+            <option value="Student">Student</option>
+            <option value="Company">Company</option>
+            <option value="Admin">Admin</option>
+        </select>
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" required>
+
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" required>
+
+        <input type="submit" value="Login" id="button">
+    </form>
+
+    <div class="footer-text">
+        <a href="{{ url_for('register_company') }}">Register as Company</a>
+        <span> | </span>
+        <a href="{{ url_for('register_student') }}">Register as Student</a>
+    </div>
+</div>
+{% endblock %}

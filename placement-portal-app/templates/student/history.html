@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block title %}My Applications{% endblock %}
+
+{% block nav %}
+<a href="/student" class="nav-link">Available Drives</a>
+<a href="/student/history" class="nav-link active">My Applications</a>
+<a href="/student/profile" class="nav-link">Profile</a>
+<a href="/logout" class="nav-link nav-right">Logout</a>
+{% endblock %}
+
+{% block content %}
+<h5 class="page-heading">Application History</h5>
+
+{% if applications %}
+<table class="data-table">
+    <tr>
+        <th>Job Title</th>
+        <th>Company</th>
+        <th>Status</th>
+    </tr>
+    {% for a in applications %}
+    <tr>
+        <td>{{ a.job_title }}</td>
+        <td>{{ a.company_name }}</td>
+        <td>
+            {% if a.status == 'Applied' %}<span class="badge bg-blue">Applied</span>
+            {% elif a.status == 'Shortlisted' %}<span class="badge bg-green">Shortlisted</span>
+            {% elif a.status == 'Selected' %}<span class="badge bg-green">Selected</span>
+            {% else %}<span class="badge bg-red">Rejected</span>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p class="empty-msg">You haven't applied to any drives yet.</p>
+{% endif %}
+{% endblock %}

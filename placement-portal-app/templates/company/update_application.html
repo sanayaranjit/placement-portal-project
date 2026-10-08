@@ -1,0 +1,69 @@
+{% extends "layout.html" %}
+{% block title %}Update Applications{% endblock %}
+
+{% block nav %}
+<a href="/company" class="nav-link">Dashboard</a>
+<a href="/company/create-drive" class="nav-link">Create Drive</a>
+<a href="/company/applicants" class="nav-link active">Applicants</a>
+<a href="/logout" class="nav-link nav-right">Logout</a>
+{% endblock %}
+
+{% block content %}
+<h5 class="page-heading">Applicants</h5>
+
+{% if drive_applications %}
+    {% for group in drive_applications %}
+        <h6 class="drive-group-title">{{ group.job_title }}</h6>
+        {% if group.applicants %}
+        <table class="data-table">
+            <tr>
+                <th>Student</th>
+                <th>Department</th>
+                <th>CGPA</th>
+                <th>Status</th>
+                <th>Update Status</th>
+                <th>Resume</th>
+            </tr>
+            {% for app in group.applicants %}
+            <tr>
+                <td>{{ app.student_name }}</td>
+                <td>{{ app.department }}</td>
+                <td>{{ app.cgpa }}</td>
+                <td>
+                    {% if app.status == 'Applied' %}<span class="badge bg-blue">Applied</span>
+                    {% elif app.status == 'Shortlisted' %}<span class="badge bg-green">Shortlisted</span>
+                    {% elif app.status == 'Selected' %}<span class="badge bg-green">Selected</span>
+                    {% else %}<span class="badge bg-red">Rejected</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <form method="POST" action="/company/update-status" class="inline-form">
+                        <input type="hidden" name="app_id" value="{{ app.id }}">
+                        <select name="status" class="form-select-sm">
+                            <option value="Applied" {% if app.status=='Applied' %}selected{% endif %}>Applied</option>
+                            <option value="Shortlisted" {% if app.status=='Shortlisted' %}selected{% endif %}>Shortlisted</option>
+                            <option value="Selected" {% if app.status=='Selected' %}selected{% endif %}>Selected</option>
+                            <option value="Rejected" {% if app.status=='Rejected' %}selected{% endif %}>Rejected</option>
+                        </select>
+
+                        <button type="submit" class="btn btn-green btn-sm">Update</button>
+                    </form>
+                </td>
+                <td>
+                    {% if app.resume %}
+                        <a href="{{ url_for('static', filename='resumes/' + app.resume) }}" target="_blank" class="btn btn-sm btn-purple">View</a>
+                    {% else %}
+                        <span class="text-muted">None</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        <p class="empty-msg">No applicants for this drive.</p>
+        {% endif %}
+    {% endfor %}
+{% else %}
+<p class="empty-msg">No applications received yet.</p>
+{% endif %}
+{% endblock %}
